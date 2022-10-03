@@ -1,0 +1,12 @@
+.controls{ 
+    display: flex;
+    justify-content: center;
+
+    .box{
+        width: 450px;
+
+        .btn{
+            min-width: 120px;
+        }
+    }
+}
