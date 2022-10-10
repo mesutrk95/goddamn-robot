@@ -1,0 +1,18 @@
+{
+  "name": "robot-node-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "http": "0.0.1-security",
+    "pi-camera": "^1.7.0",
+    "pi-camera-connect": "^0.3.4",
+    "socket.io": "^4.5.1"
+  }
+}
