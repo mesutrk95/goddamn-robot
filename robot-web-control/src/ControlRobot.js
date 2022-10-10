@@ -1,9 +1,9 @@
 import styles from './ControlRobot.module.scss'
 import React, { useContext, useEffect } from 'react'
-import {SocketContext} from './context/socket';
+// import {SocketContext} from './context/socket';
 
 export default function ControlRobot() {
-    const socket = useContext(SocketContext); 
+    const socket = window.socket;//useContext(SocketContext); 
 
     useEffect(() => { 
         function keyDown(e){

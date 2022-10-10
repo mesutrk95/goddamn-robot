@@ -3,18 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@primer/octicons-react": "^17.5.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "bootstrap": "^5.2.1",
+    "moment": "^2.29.4",
+    "pi-camera-connect": "^0.3.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
     "sass": "^1.55.0",
-    "socket.io-client": "^4.5.2",
-    "web-vitals": "^2.1.4",
-    "@primer/octicons-react": "^17.5.0",
-    "bootstrap": "^5.2.1",
-    "moment": "^2.29.4"
+    "socket.io-client": "^4.5.1",
+    "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
