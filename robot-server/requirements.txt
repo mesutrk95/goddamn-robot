@@ -1,0 +1,6 @@
+python-socketio==5.7.1
+
+eventlet
+numpy 
+Pillow
+PiCamera
