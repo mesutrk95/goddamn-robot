@@ -19,6 +19,13 @@ function App() {
   const [socket, setSocket] = useState(window.socket); 
   const [image, setImage] = useState(null); 
   const imageRef = useRef();
+  const [selectedClient, setSelectedClient] = useState([]);
+
+  function handleSelectChange(event) {
+      setSelectedClient(event.target.value);
+      window.socket.emit('video-quality', event.target.value)
+  }
+
 
   function reconnect(){
     console.log('connection', host + ':' + port);
@@ -94,6 +101,13 @@ function App() {
         <div className='btn btn-outline-primary' onClick={e => reconnect() }>Connect</div>
 
         <div className='btn btn-warning' onClick={e => window.socket.emit('video', { }) }>get image</div>
+        
+        <select value={selectedClient} onChange={handleSelectChange}>
+            <option value="lq">Low Quality</option>
+            <option value="mq">Medium Quality</option>
+            <option value="hq">High Quality</option>
+        </select>
+
         <div className='container'>
 
           <div className='row py-5'>
