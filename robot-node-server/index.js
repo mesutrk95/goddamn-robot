@@ -1,3 +1,5 @@
+
+const Camera = require('./Camera') 
 const server = require('http').createServer();
 const io = require('socket.io')(server, {
     cors: {
@@ -5,25 +7,13 @@ const io = require('socket.io')(server, {
     }
   });
   
-const { StreamCamera, Codec, Flip, SensorMode } = require('pi-camera-connect');
+let cameraRequesterClient = null; 
 
-let cameraRequesterClient = null;
-const streamCamera = new StreamCamera({
-  codec: Codec.MJPEG,
-  flip: Flip.None,
-  sensorMode: SensorMode.AutoSelect,
-  width: 320,
-  height: 240,
-  bitRate: 1 * 1000000,
-  fps: 30
-
-  // sensorMode: SensorMode.Mode6
+const camera = new Camera('lq') 
+camera.onFrame( data  => {
+  cameraRequesterClient.emit('video', data); 
 });
-streamCamera.on('frame', (data) => {
-  cameraRequesterClient.emit('video',data);
-  //  "data:image/jpeg;base64," + data.toString("base64"));
-});
-let captureStarted = false;
+ 
 
 io.on('connection', client => {
     console.log('connection ' , client.id);
@@ -32,28 +22,29 @@ io.on('connection', client => {
     })
     
     client.on('video', async data => { 
-        if(!captureStarted){
-          captureStarted= true;
-          cameraRequesterClient = client
-          await streamCamera.startCapture();
+
+        if(!camera.isStreaming()){
+          cameraRequesterClient = client;
+          await camera.start()
           console.log('capture started')
         }else{
-          await streamCamera.stopCapture();
-          cameraRequesterClient = null
-          captureStarted= false;
+          await camera.stop()  
           console.log('capture stopped')
-        }
-          
-        // client.emit('video', res)
-
+        }  
     });
+    
+    client.on('video-quality', async (data) =>{
+        console.log('quality', data); 
+ 
+        await camera.setQuality(data)
+    })
+
     client.on('disconnect', async () => { 
       console.log(client.id, 'disconnected')
       
-      if(captureStarted && cameraRequesterClient && 
+      if(camera.isStreaming() && cameraRequesterClient && 
         cameraRequesterClient.id == client.id){  
-        await streamCamera.stopCapture();
-        captureStarted= false;
+        await camera.stop(); 
         console.log('capture stopped')
       }
 
@@ -64,10 +55,7 @@ server.listen(5123, ()=>{
 });
 
 process.on('SIGINT', async function () {
-  if(captureStarted){
-    console.log('stopping camera...');
-    await streamCamera.stopCapture();
-  }
+  await camera.stop();
   console.log('closed.');
   process.exit()
 });
