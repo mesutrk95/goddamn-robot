@@ -19,7 +19,7 @@ const qualities = {
     lq: {
         width: 320,
         height: 240,
-        bitRate: 1 * 1000000,
+        bitRate: 2 * 1000000,
         fps: 30
     }
 } 
