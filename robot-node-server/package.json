@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "sudo nodemon index.js --watch"
   },
   "keywords": [],
   "author": "",
@@ -13,6 +14,11 @@
     "http": "0.0.1-security",
     "pi-camera": "^1.7.0",
     "pi-camera-connect": "^0.3.4",
-    "socket.io": "^4.5.1"
+    "pigpio": "^3.3.1",
+    "socket.io": "^4.5.1",
+    "wiring-pi": "^2.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
   }
 }
