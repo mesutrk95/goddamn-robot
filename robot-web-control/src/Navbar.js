@@ -39,8 +39,8 @@ export default function Navbar(props) {
                     {
                         socket && (
                         <>
-                            <h5 className="mb-0">Server Host = {socket.io.uri}</h5>
-                            <h5 className="mb-0">Socket Status = {socket.connected ? 'Connected': 'Not Connected'} </h5>  
+                            <h6 className="mb-0">Server Host = {socket.io.uri}</h6>
+                            <h6 className="mb-0">Socket Status = {socket.connected ? 'Connected': 'Not Connected'} </h6>  
                         </>
                         )
                     }

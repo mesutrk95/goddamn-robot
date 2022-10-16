@@ -1,31 +1,46 @@
 import styles from './ControlRobot.module.scss'
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import useSocket from './context/useSocket';
+import { events } from './app-events';
 // import {SocketContext} from './context/socket';
 
-let keysDown = '';
 let cmdSendIntervalHandler = null
-function sendCMD(){ 
-    console.log('action', keysDown)
-    window.socket.emit('action', keysDown)
-}
 
 export default function ControlRobot() {
     // const socket = window.socket;//useContext(SocketContext); 
+
+    const socket = useSocket();
+    const [keysDown , setKeysDown] = useState('')
+ 
+    function sendCMD(){ 
+        console.log('action', keysDown, socket)
+        socket.emit('action', keysDown)
+    }
+    function action(name){
+
+        socket.emit('action', name)
+
+    }
+
+    function buttonDown(btn){
+
+    }
+
 
     useEffect(() => { 
         
         function keyDown(e){
             console.log('key-down');
-            if(e.key === 'w' || e.key === 'ArrowUp')  keysDown = 'move-forward' 
-            else if(e.key === 's' || e.key === 'ArrowDown')  keysDown = 'move-backward'
-            else if(e.key === 'd' || e.key === 'ArrowRight')  keysDown = 'turn-right'
-            else if(e.key === 'a' || e.key === 'ArrowLeft')  keysDown = 'turn-left'
+            if(e.key === 'w' || e.key === 'ArrowUp')  setKeysDown('move-forward')
+            else if(e.key === 's' || e.key === 'ArrowDown')  setKeysDown('move-backward')
+            else if(e.key === 'd' || e.key === 'ArrowRight')  setKeysDown('turn-right')
+            else if(e.key === 'a' || e.key === 'ArrowLeft')  setKeysDown('turn-left')
             // else if(e.key === 'x')  action('stop')  
 
             if(!cmdSendIntervalHandler) {
                 clearInterval(cmdSendIntervalHandler) 
                 // sendCMD();
-                cmdSendIntervalHandler = setInterval(sendCMD , 50)
+                cmdSendIntervalHandler = setInterval(()=> sendCMD(), 50)
             }
         }
 
@@ -35,10 +50,10 @@ export default function ControlRobot() {
             cmdSendIntervalHandler = null;
         }
 
-        window.addEventListener("keydown", keyDown);  
-        window.addEventListener("keyup", keyUp);  
+        window.addEventListener("keydown", e => keyDown(e));  
+        window.addEventListener("keyup", e => keyUp(e));  
 
-        let socketDisconnectUnregister = window.events.socket.disconnect.register(()=>{
+        let disconnectSub = events.socket.disconnect.register(()=>{
             clearInterval(cmdSendIntervalHandler)
             cmdSendIntervalHandler = null;
         })
@@ -47,19 +62,9 @@ export default function ControlRobot() {
             window.removeEventListener("keydown", keyDown); 
             window.removeEventListener("keyup", keyUp); 
             clearInterval(cmdSendIntervalHandler)
-            socketDisconnectUnregister();
+            disconnectSub.unregister();
         }
     }, [])
-
-    function action(name){
-
-        window.socket.emit('action', name)
-
-    }
-
-    function buttonDown(btn){
-
-    }
 
     return (
         <div className={styles.controls}>

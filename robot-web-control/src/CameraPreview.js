@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { events } from './app-events';
 import styles from './CameraPreview.module.scss'
 import useSocket from './context/useSocket';
 
@@ -6,7 +7,7 @@ let frames = 0, totalSize =0,  startTime = Date.now();
 
 export default function CameraPreview() {
 
-    const socket = useSocket(0);
+    const socket = useSocket();
     const [fps, setFPS] = useState(0);
     const [speedRate, setSpeedRate] = useState(0);
     const [image, setImage] = useState(null);   
@@ -25,7 +26,7 @@ export default function CameraPreview() {
           totalSize = 0;  
         }, 1000);
 
-        window.events.socket.cameraData.register((data)=>{
+        events.socket.cameraData.register((data)=>{
             // var bytes = new Uint8Array(data.data);
             var blob = new Blob([data]);
             var reader = new FileReader();
