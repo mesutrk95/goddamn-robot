@@ -1,11 +1,9 @@
 const Gpio = require('pigpio').Gpio;
-
-const in1 = new Gpio(19, {mode: Gpio.OUTPUT});
-const in2 = new Gpio(26, {mode: Gpio.OUTPUT});
-const in3 = new Gpio(16, {mode: Gpio.OUTPUT});
-const in4 = new Gpio(20, {mode: Gpio.OUTPUT}); 
- 
 const Camera = require('./Camera') 
+const Motors = require('./Motors') 
+
+const motors = new Motors(19, 26, 16, 20) 
+ 
 const server = require('http').createServer();
 const io = require('socket.io')(server, {
     cors: {
@@ -14,7 +12,7 @@ const io = require('socket.io')(server, {
 });
   
 let cameraRequesterClient = null; 
-
+ 
 const camera = new Camera('lq') 
 camera.onFrame( data  => {
   cameraRequesterClient.emit('video', data); 
@@ -26,10 +24,7 @@ io.on('connection', client => {
     let timeoutHandle = null;
     function reset(){
       timeoutHandle = null;
-      in1.digitalWrite(0);
-      in2.digitalWrite(0);
-      in3.digitalWrite(0);
-      in4.digitalWrite(0);  
+      motors.reset(); 
       console.log('reset');
     }
     let last = 0;
@@ -39,31 +34,69 @@ io.on('connection', client => {
       console.log('action', now - last, data); 
       last = now;
 
+      const powerX = Math.floor(255 * data.x)
+      const powerY = Math.floor(255 * data.y)
+      motors.left.turn(powerY > 0 ? 'forward' : 'backward', powerY)
+      motors.right.turn(powerY > 0 ? 'forward' : 'backward', powerY)
 
-      if(data == 'move-forward'){ 
-        in1.digitalWrite(1);
-        in2.digitalWrite(0);
-        in3.digitalWrite(0);
-        in4.digitalWrite(1);  
-      }
-      if(data == 'move-backward'){
-        in1.digitalWrite(0);
-        in2.digitalWrite(1);
-        in3.digitalWrite(1);
-        in4.digitalWrite(0); 
-      }
-      if(data == 'turn-left'){
-        in1.digitalWrite(0);
-        in2.digitalWrite(1);
-        in3.digitalWrite(0);
-        in4.digitalWrite(1);  
-      }
-      if(data == 'turn-right'){
-        in1.digitalWrite(1);
-        in2.digitalWrite(0);
-        in3.digitalWrite(1);
-        in4.digitalWrite(0);  
-      }
+
+      if(timeoutHandle){ 
+        clearTimeout(timeoutHandle)
+      } 
+      timeoutHandle = setTimeout(() => reset(), 75)
+
+      return;
+      if (data.y == 0 && data.x == 0){
+        motors.reset(); 
+      } else if(Math.abs(data.y) > 0 && Math.abs(data.x) > 0){
+        const powerX = Math.floor(255 * data.x)
+        const powerY = Math.floor(255 * data.y)
+        if(powerX > 0){
+          if(powerY > 0){
+            in1.pwmWrite(power);
+            in2.pwmWrite(0);
+            in3.pwmWrite(power);
+            in4.pwmWrite(0);   
+          }else{
+
+          }
+        }else{
+          if(powerY > 0){
+
+          }else{
+            
+          }
+
+        }
+
+
+      } else if(Math.abs(data.y) > 0 && data.x == 0){ 
+        const power = Math.abs(Math.floor(255 * data.y)) 
+        if(data.y > 0){
+          in1.pwmWrite(0);
+          in2.pwmWrite(power);
+          in3.pwmWrite(power);
+          in4.pwmWrite(0);      
+        }else{
+          in1.pwmWrite(power);
+          in2.pwmWrite(0);
+          in3.pwmWrite(0);
+          in4.pwmWrite(power);    
+        }  
+      } else if(Math.abs(data.x) > 0 && data.y == 0){ 
+        const power = Math.abs(Math.floor(255 * data.x)) 
+        if(data.x > 0){  
+          in1.pwmWrite(power);
+          in2.pwmWrite(0);
+          in3.pwmWrite(power);
+          in4.pwmWrite(0);    
+        }else{
+          in1.pwmWrite(0);
+          in2.pwmWrite(power);
+          in3.pwmWrite(0);
+          in4.pwmWrite(power);        
+        }  
+      }  
       if(timeoutHandle){ 
         clearTimeout(timeoutHandle)
       } 
@@ -104,11 +137,7 @@ server.listen(5123, ()=>{
 });
 
 process.on('SIGINT', async function () {
-  in1.digitalWrite(0);
-  in2.digitalWrite(0);
-  in3.digitalWrite(0);
-  in4.digitalWrite(0);
-
+  motors.reset();  
   await camera.stop();
   console.log('closed.');
   process.exit()
