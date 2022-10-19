@@ -6,15 +6,35 @@ import SocketContext from './context/socket-context';
   
 
 import ControlRobot from './ControlRobot'; 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import Navbar from './Navbar';
 import CameraPreview from "./CameraPreview";
 import { events } from "./app-events";
   
-
+ 
 function App() {   
   const [socket, setSocket] = useState(null);  
+
+
+    // const keyDown = useCallback( e  => {
+    //     console.log('key-down', this, socket); 
+    // }, [ ]);
+    // const keyUp = useCallback( e  => {
+    //     console.log('key-up', this, socket );  
+    // }, [ ]);
+
+    // useEffect(() => { 
+    
+
+    //     window.addEventListener("keydown", keyDown);  
+    //     window.addEventListener("keyup", keyUp);  
+ 
+    //     return ()=>{
+    //         window.removeEventListener("keydown", keyDown); 
+    //         window.removeEventListener("keyup", keyUp);  
+    //     }
+    // }, [])
 
   
   function disconnectSocket(){
