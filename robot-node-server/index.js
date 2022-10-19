@@ -2,7 +2,7 @@ const Gpio = require('pigpio').Gpio;
 const Camera = require('./Camera') 
 const Motors = require('./Motors') 
 
-const motors = new Motors(19, 26, 16, 20) 
+const motors = new Motors(19, 26, 20, 16) 
  
 const server = require('http').createServer();
 const io = require('socket.io')(server, {
@@ -31,13 +31,33 @@ io.on('connection', client => {
 
     client.on('action', async data => { 
       let now = Date.now();
-      console.log('action', now - last, data); 
-      last = now;
+      const axis = { x: parseFloat(data.x), y: parseFloat(data.y)}
+      console.log('action', now - last, axis); 
+      last = now;  
+  
+      if(axis.x == 0 && axis.y == 0){
+        motors.left.stop()
+        motors.right.stop()
+        return;
+      }
 
-      const powerX = Math.floor(255 * data.x)
-      const powerY = Math.floor(255 * data.y)
-      motors.left.turn(powerY > 0 ? 'forward' : 'backward', powerY)
-      motors.right.turn(powerY > 0 ? 'forward' : 'backward', powerY)
+      if(axis.y > 0.01){
+        if(axis.x > 0){
+          motors.left.turn('forward', axis.y)
+          motors.right.turn('forward', Math.abs(axis.y - axis.x))
+        }else{
+          motors.left.turn('forward', axis.y )
+          motors.right.turn('forward', axis.y ) 
+        }
+      }else if(y < 0.01){
+        if(axis.x > 0){
+          motors.left.turn('backward', -axis.y)
+          motors.right.turn('backward', -axis.y)
+        }else{
+          motors.left.turn('backward', -axis.y )
+          motors.right.turn('backward', -axis.y ) 
+        }
+      }
 
 
       if(timeoutHandle){ 
