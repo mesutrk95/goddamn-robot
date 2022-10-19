@@ -2,7 +2,7 @@ const Gpio = require('pigpio').Gpio;
 const Camera = require('./Camera') 
 const Motors = require('./Motors') 
 
-const motors = new Motors(19, 26, 20, 16) 
+const motors = new Motors(20, 16, 19, 26) 
  
 const server = require('http').createServer();
 const io = require('socket.io')(server, {
@@ -18,6 +18,15 @@ camera.onFrame( data  => {
   cameraRequesterClient.emit('video', data); 
 });
  
+function axis2deg(axis){
+  const radianAngle = Math.atan2(axis.y, axis.x);  
+  let degrees = radianAngle * (180 / Math.PI);   
+  if (axis.y < 0) { 
+    degrees = 360 + degrees;
+  }  
+  return degrees
+}
+
 io.on('connection', client => {
     console.log('connection ' , client.id);
 
@@ -40,87 +49,35 @@ io.on('connection', client => {
         motors.right.stop()
         return;
       }
+      let deg = axis2deg(axis)
+      let power = Math.sqrt(axis.x * axis.x + axis.y * axis.y)
+      let df = deg < 180 ? 'f' : 'b'; 
+      let db = deg < 180 ? 'b' : 'f';
 
-      if(axis.y > 0.01){
-        if(axis.x > 0){
-          motors.left.turn('forward', axis.y)
-          motors.right.turn('forward', Math.abs(axis.y - axis.x))
-        }else{
-          motors.left.turn('forward', axis.y )
-          motors.right.turn('forward', axis.y ) 
-        }
-      }else if(y < 0.01){
-        if(axis.x > 0){
-          motors.left.turn('backward', -axis.y)
-          motors.right.turn('backward', -axis.y)
-        }else{
-          motors.left.turn('backward', -axis.y )
-          motors.right.turn('backward', -axis.y ) 
-        }
+      if(deg > 180) deg = deg - 180 
+       
+      if(deg < 45){
+        motors.right.turn(db, power * (1 - deg / 45))
+        motors.left.turn(df, power)
       }
-
-
+      else if(deg < 90){
+        motors.right.turn(df, power * (-1 + deg / 45))
+        motors.left.turn(df, power)
+      }
+      else if(deg < 135){
+        motors.right.turn(df, power)
+        motors.left.turn(df, power * (3 - deg / 45))
+      }
+      else if(deg < 180){
+        motors.right.turn(df, power)
+        motors.left.turn(db, power * (-3 + deg / 45))
+      } 
+ 
       if(timeoutHandle){ 
         clearTimeout(timeoutHandle)
       } 
       timeoutHandle = setTimeout(() => reset(), 75)
-
-      return;
-      if (data.y == 0 && data.x == 0){
-        motors.reset(); 
-      } else if(Math.abs(data.y) > 0 && Math.abs(data.x) > 0){
-        const powerX = Math.floor(255 * data.x)
-        const powerY = Math.floor(255 * data.y)
-        if(powerX > 0){
-          if(powerY > 0){
-            in1.pwmWrite(power);
-            in2.pwmWrite(0);
-            in3.pwmWrite(power);
-            in4.pwmWrite(0);   
-          }else{
-
-          }
-        }else{
-          if(powerY > 0){
-
-          }else{
-            
-          }
-
-        }
-
-
-      } else if(Math.abs(data.y) > 0 && data.x == 0){ 
-        const power = Math.abs(Math.floor(255 * data.y)) 
-        if(data.y > 0){
-          in1.pwmWrite(0);
-          in2.pwmWrite(power);
-          in3.pwmWrite(power);
-          in4.pwmWrite(0);      
-        }else{
-          in1.pwmWrite(power);
-          in2.pwmWrite(0);
-          in3.pwmWrite(0);
-          in4.pwmWrite(power);    
-        }  
-      } else if(Math.abs(data.x) > 0 && data.y == 0){ 
-        const power = Math.abs(Math.floor(255 * data.x)) 
-        if(data.x > 0){  
-          in1.pwmWrite(power);
-          in2.pwmWrite(0);
-          in3.pwmWrite(power);
-          in4.pwmWrite(0);    
-        }else{
-          in1.pwmWrite(0);
-          in2.pwmWrite(power);
-          in3.pwmWrite(0);
-          in4.pwmWrite(power);        
-        }  
-      }  
-      if(timeoutHandle){ 
-        clearTimeout(timeoutHandle)
-      } 
-      timeoutHandle = setTimeout(() => reset(), 75)
+ 
     })
     
     client.on('video', async data => { 

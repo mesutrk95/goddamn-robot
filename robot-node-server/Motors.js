@@ -9,13 +9,16 @@ class Motor {
     }
     turn(dir, speed){
         const power = Math.floor(speed * 255)
-
-        if(dir == 'forward'){ 
-            this.in1.digitalWrite(0);
-            this.in2.pwmWrite(power);  
-        } else { 
-            this.in1.pwmWrite(power);
-            this.in2.digitalWrite(0); 
+        try {
+            if(dir == 'f'){ 
+                this.in1.digitalWrite(0);
+                this.in2.pwmWrite(power);  
+            } else { 
+                this.in1.pwmWrite(power);
+                this.in2.digitalWrite(0); 
+            }
+        } catch (error) {
+            console.error(dir, speed, power);
         }
     }
     stop(){
