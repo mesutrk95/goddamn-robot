@@ -109,8 +109,7 @@ export default function CameraPreview() {
     // })
   return (
     <div className={styles.camera}> 
-        <img src={image}  width={width} height={height}
-            alt="rpi camera" style={{ transform : 'rotate(180deg)' }}/>
+        <img src={image}  width={width} height={height} alt="rpi camera"  />
         {/* <img src={image} width={'100%'} height={'100%'} 
             alt="rpi camera" style={{ transform : 'rotate(180deg)', filter:'blur(50px)' }}/> */}
 
