@@ -10,20 +10,19 @@ let cmdSendIntervalHandler = null
 
 let axis = {x : 0, y : 0}
 
+function sqrt(value){
+    return value < 0 ? -Math.sqrt(-value): Math.sqrt(value)
+}
+
 export default function ControlRobot() { 
 
     const socket = useSocket(); 
  
     function sendCMD(){ 
-        let a = { x: axis.x.toFixed(4) , y: axis.y.toFixed(4) };
+        let a = { x: sqrt(axis.x).toFixed(4) , y: sqrt(axis.y).toFixed(4) };
         console.log('axis', a) 
         socket.emit('action', a)
-    }
-    function action(name){
-
-        socket.emit('action', name)
-
-    }   
+    } 
     function onKeyDown(key ,event) {
         console.log('key-down', key, axis); 
         
@@ -56,6 +55,11 @@ export default function ControlRobot() {
     }
   
     useEffect(() => {  
+        if(socket){
+            socket.on('action' , (data)=> {
+                console.log('deg:', data);
+            })
+        }
         let disconnectSub = events.socket.disconnect.register(()=>{
             clearInterval(cmdSendIntervalHandler)
             cmdSendIntervalHandler = null;
@@ -66,7 +70,7 @@ export default function ControlRobot() {
             cmdSendIntervalHandler = null;
             disconnectSub.unregister(); 
         }
-    }, []) 
+    }, [socket]) 
 
     const [isMouseDown, setMouseIsDown] = useState(false); 
     const widgetHandleRef = useRef()
@@ -86,7 +90,7 @@ export default function ControlRobot() {
         let newAxis = { x: 0 , y : 0 };
         axis = newAxis;
 
-        console.log(newAxis) 
+        // console.log(newAxis) 
 
         clearInterval(cmdSendIntervalHandler)
         cmdSendIntervalHandler = null;
@@ -121,7 +125,7 @@ export default function ControlRobot() {
         const l = 2 * (absX / rw * 0.5 - 0.5)
         const t = -2 * (absY / rw * 0.5 - 0.5)
         const newAxis = { x: l , y : t};
-        console.log(l, t)
+        // console.log(l, t)
         axis = newAxis;
 
         if(!cmdSendIntervalHandler) { 
