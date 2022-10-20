@@ -1,6 +1,7 @@
 import styles from './ControlRobot.module.scss'
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import useSocket from './context/useSocket';
+import useGamepad from './context/useGamepad';
 import { events } from './app-events';
 // import {SocketContext} from './context/socket'; 
 
@@ -16,13 +17,15 @@ function sqrt(value){
 
 export default function ControlRobot() { 
 
-    const socket = useSocket(); 
+    const socket = useSocket();  
  
-    function sendCMD(){ 
-        let a = { x: sqrt(axis.x).toFixed(4) , y: sqrt(axis.y).toFixed(4) };
+    const sendCMD = useCallback(caxis => { 
+        const axx = caxis || axis
+        let a = { x: axx.x.toFixed(4) , y: axx.y.toFixed(4) };
         console.log('axis', a) 
         socket.emit('action', a)
-    } 
+    }, [socket]);
+
     function onKeyDown(key ,event) {
         console.log('key-down', key, axis); 
         
@@ -71,6 +74,19 @@ export default function ControlRobot() {
             disconnectSub.unregister(); 
         }
     }, [socket]) 
+
+    useEffect(()=>{ 
+        const sub = events.gamepad.update.register(gp =>{
+            if(Math.abs(gp.axes[0]) > 0.01 || Math.abs(gp.axes[1]) > 0.01){
+                console.log(gp.axes);
+                const a = { x : gp.axes[0], y: -gp.axes[1] }
+                sendCMD(a)
+            }
+        })
+        return ()=>{ 
+            sub.unregister()
+        } 
+    }, [socket, sendCMD])
 
     const [isMouseDown, setMouseIsDown] = useState(false); 
     const widgetHandleRef = useRef()
@@ -124,13 +140,13 @@ export default function ControlRobot() {
 
         const l = 2 * (absX / rw * 0.5 - 0.5)
         const t = -2 * (absY / rw * 0.5 - 0.5)
-        const newAxis = { x: l , y : t};
+        const newAxis = { x: sqrt(l) , y : sqrt(t)};
         // console.log(l, t)
         axis = newAxis;
 
         if(!cmdSendIntervalHandler) { 
             clearInterval(cmdSendIntervalHandler) 
-            cmdSendIntervalHandler = setInterval(()=> sendCMD(), 50)
+            cmdSendIntervalHandler = setInterval(()=> sendCMD(), 10)
             sendCMD();
         } 
     }

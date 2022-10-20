@@ -2,7 +2,9 @@
 import styles from './App.module.scss';
 
 import socketio from "socket.io-client";     
+import {mountGamepadEvents} from './gamepad';
 import SocketContext from './context/socket-context';
+import GamepadContext from './context/gamepad-context';
   
 
 import ControlRobot from './ControlRobot'; 
@@ -10,11 +12,11 @@ import { useCallback, useEffect, useState } from 'react';
 
 import Navbar from './Navbar';
 import CameraPreview from "./CameraPreview";
-import { events } from "./app-events";
-  
- 
+import { events } from "./app-events"; 
+
 function App() {   
-  const [socket, setSocket] = useState(null);  
+  const [socket, setSocket] = useState(null);   
+  const [gamepad, setGamepad] = useState(null); 
 
 
     // const keyDown = useCallback( e  => {
@@ -24,6 +26,12 @@ function App() {
     //     console.log('key-up', this, socket );  
     // }, [ ]);
 
+    useEffect(()=>{
+      const unregister = mountGamepadEvents();
+      return ()=>{
+        unregister()
+      }
+    })
     // useEffect(() => { 
     
 
@@ -64,6 +72,19 @@ function App() {
     })
   }
   useEffect(()=>{ 
+    // window.addEventListener("gamepadconnected", (e) => {
+    //   console.log("Gamepad connected at index %d: %s. %d buttons, %d axes.",
+    //     e.gamepad.index, e.gamepad.id,
+    //     e.gamepad.buttons.length, e.gamepad.axes.length);
+        
+    //   const gp = navigator.getGamepads()[e.gamepad.index];
+    //   console.log(gp);
+    //   setGamepad(gp) 
+    // });
+    // window.addEventListener("gamepaddisconnected", (e) => {
+    //   console.log("Gamepad disconnected from index %d: %s",
+    //     e.gamepad.index, e.gamepad.id);
+    // }); 
     connectSocket(localStorage.getItem('host') || 'localhost', localStorage.getItem('port') || '5123'); 
 
     return ()=>{ 
@@ -74,14 +95,17 @@ function App() {
 
 
   return (
-    <SocketContext.Provider value={socket}>
-      <div className="App" >
-        <Navbar connectSocket={(host, port) => connectSocket(host, port)}/>
- 
-        <ControlRobot />
-        <CameraPreview />
-      </div>
-    </SocketContext.Provider>
+    <GamepadContext.Provider value={gamepad}>
+      <SocketContext.Provider value={socket}>
+        <div className="App" >
+          <Navbar connectSocket={(host, port) => connectSocket(host, port)}> 
+              {/* <div>{gamepads && (gamepads.axes) }</div> */}
+          </Navbar>
+          <ControlRobot />
+          <CameraPreview />
+        </div>
+      </SocketContext.Provider>
+    </GamepadContext.Provider>
   );
 }
 

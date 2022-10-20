@@ -15,7 +15,7 @@ export default function Navbar(props) {
     return (
         <div className=' '>
             <nav className={styles.navbar}>
-
+                {props.children}
                 <div className=' '>
                     <div className='  px-0 d-flex align-items-center'>
                         <input className={styles.host} type="text" value={host} 
