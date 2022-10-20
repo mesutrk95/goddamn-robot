@@ -11,6 +11,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
     "http": "0.0.1-security",
     "pi-camera": "^1.7.0",
     "pi-camera-connect": "^0.3.4",

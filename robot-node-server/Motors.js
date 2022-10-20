@@ -18,7 +18,8 @@ class Motor {
                 this.in2.digitalWrite(0); 
             }
         } catch (error) {
-            console.error(dir, speed, power);
+            // console.error(dir, speed, power);
+            throw {dir , speed, power}
         }
     }
     stop(){
