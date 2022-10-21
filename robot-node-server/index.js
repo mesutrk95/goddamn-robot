@@ -1,18 +1,30 @@
 
 const express = require('express');
 const cors = require('cors');
+const fs = require('fs');
+const os 	= require('os-utils');
+
+// const temp = require("pi-temperature");
 const Gpio = require('pigpio').Gpio;
 const Camera = require('./Camera') 
 const Motors = require('./Motors') 
 const motors = new Motors(20, 16, 19, 26) 
 
 var app = express();
-app.use(cors());
+// app.use(cors());
+app.use((req, res, next) => {
+  res.append('Access-Control-Allow-Origin', ['*']);
+  res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.append('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+});
 
+app.get('/', (req, res)=>{
+  res.send('ok')
+})
 var server = app.listen(5123, ()=>{
   console.log('listening on ' + 5123)
 }); 
-
   
 const io = require('socket.io')(server, { 
   cors : { 
@@ -36,6 +48,7 @@ function axis2deg(axis){
   }  
   return degrees
 }
+
 
 io.on('connection', client => {
     console.log('connection ' , client.id);
@@ -68,7 +81,7 @@ io.on('connection', client => {
         return;
       }
 
-      if(power > 1) power = 1
+      if(power > 0.9) power = 1
       if(deg > 180) deg = deg - 180 
        
 
@@ -85,10 +98,14 @@ io.on('connection', client => {
           motors.right.turn(df, power)
           motors.left.turn(df, power * (3 - deg / 45))
         }
-        else if(deg <= 180){
+        else if(deg < 180){
           motors.right.turn(df, power)
           motors.left.turn(db, power * (-3 + deg / 45))
         } 
+        if(deg == 180){ 
+          motors.right.turn(db, power )
+          motors.left.turn(df, power)
+        }
       }catch(ex){
         console.error(ex, deg + ' deg', power)
       }
@@ -129,6 +146,19 @@ io.on('connection', client => {
 
     });
 }); 
+
+setInterval(() => {
+
+  let p = os.cpuUsage(function(cpuUsage){ 
+    var temp = fs.readFileSync("/sys/class/thermal/thermal_zone0/temp");
+    var temp_c = temp/1000;
+    // console.log("It's " + temp_c + " celsius.");
+    io.emit('status', {temp :temp_c, cpuUsage : cpuUsage}) 
+    
+  });
+   
+}, 2000);
+
 process.on('SIGINT', async function () {
   motors.reset();  
   await camera.stop();

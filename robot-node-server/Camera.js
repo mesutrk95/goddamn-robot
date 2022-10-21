@@ -4,9 +4,15 @@ const { StreamCamera, Codec, Flip, SensorMode } =
 
 
 const qualities = {
+    vhq: {
+        width: 1080,
+        height: 720,
+        bitRate: 20 * 1000000,
+        fps: 30
+    },
     hq: {
-        width: 320,
-        height: 240,
+        width: 640,
+        height: 480,
         bitRate: 10 * 1000000,
         fps: 30
     },
@@ -20,6 +26,12 @@ const qualities = {
         width: 320,
         height: 240,
         bitRate: 2 * 1000000,
+        fps: 30
+    },
+    vlq: {
+        width: 320,
+        height: 240,
+        bitRate: 1 * 1000000,
         fps: 30
     }
 } 
