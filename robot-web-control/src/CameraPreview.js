@@ -124,9 +124,10 @@ export default function CameraPreview(props) {
           <span className='d-flex align-items-center '><ArrowSwitchIcon className='ps-1 me-2' />{speedRate} KB/S</span>
           <span className='d-flex align-items-center '><DeviceCameraVideoIcon className='ps-1 me-2'/>{fps} FPS</span>
         </div>
+
         <div className={`${styles.overlay} ${styles.leftBottom}`}>
-          <span className='d-flex align-items-center '><FlameIcon className='ps-1 me-2' />{Math.floor(deviceStatus.temp)}&deg;</span>
-          <span className='d-flex align-items-center '><MeterIcon className='ps-1 me-2' />{Math.floor(deviceStatus.cpuUsage * 100)}%</span>
+          <span className='d-flex align-items-center '><FlameIcon className='ps-1 me-2' />Temp {Math.floor(deviceStatus.temp)}&deg;</span>
+          <span className='d-flex align-items-center '><MeterIcon className='ps-1 me-2' />CPU {Math.floor(deviceStatus.cpuUsage * 100)}%</span>
           {/* <span className='d-flex align-items-center '><DeviceCameraVideoIcon className='ps-1 me-2'/>{fps} FPS</span> */}
         </div>
 
