@@ -118,7 +118,7 @@ export default function CameraPreview(props) {
   return (
     <div className={styles.camera}> 
       <div className={styles.preview} style={{ width : width + 'px', height: height + 'px'}}>
-        <img src={image}  width={'100%'} height={'100%'} alt="rpi camera"  />
+        <img src={image}  width={'100%'} height={'100%'} alt=""  />
           
         <div className={styles.overlay}>
           <span className='d-flex align-items-center '><ArrowSwitchIcon className='ps-1 me-2' />{speedRate} KB/S</span>

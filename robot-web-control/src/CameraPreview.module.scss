@@ -13,15 +13,16 @@
     align-items: center;
     
     .preview{
-      background-color: red;
+      background-color: rgb(24, 24, 24);
       position: relative;
+      // overflow: hidden;
 
       img{
         
         width: auto;
         max-width: 100%;
         object-fit:cover;
-        background-color: aquamarine;
+        // background-color: aquamarine;
             
         position: absolute;
         left: 0;
