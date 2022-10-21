@@ -1,0 +1,60 @@
+.btn {
+    position: relative; 
+    color:white;
+
+    .btnHandle{
+        backdrop-filter: blur(3px);
+        border-radius: 100%;
+        background-color: rgba(0, 0, 0, 0.45);
+        padding: 10px;
+        display: inline-flex;
+        cursor: pointer;
+
+        &.success{
+            background-color:  rgba(22, 160, 133, .5)
+        }
+ 
+    }
+
+    .menu{
+        position: absolute;
+        left: 0;
+        top: 41px; 
+
+        padding: 8px 10px;
+
+        width: 250px;
+        min-height: 100px;
+        visibility: hidden;
+
+        background-color: rgba(0, 0, 0, 0.45);
+        backdrop-filter: blur(3px);
+        border-radius: 15px;
+
+        opacity: 0;
+        transform: scale(0.0);
+        transform-origin: top left;
+        transition: all 0.2s; 
+
+    }
+
+}
+.open {
+    .menu{
+        visibility: visible;
+        opacity: 1;
+        transform: scale(1.0);
+        transition: all 0.2s;
+        border-radius: 0px 15px 15px 15px;
+    }
+    .btnHandle{
+        border-radius:  15px 15px 0px 0px;  
+        padding-bottom: 15px;
+ 
+        transition: all 0.2s;
+        
+        &.success{
+            background-color: rgba(0, 0, 0, 0.45);
+        }
+    }
+}

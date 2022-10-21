@@ -8,46 +8,25 @@ import GamepadContext from './context/gamepad-context';
   
 
 import ControlRobot from './ControlRobot'; 
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Navbar from './Navbar';
 import CameraPreview from "./CameraPreview";
 import { events } from "./app-events"; 
 
 function App() {   
-  const [socket, setSocket] = useState(null);   
-  const [gamepad, setGamepad] = useState(null); 
-
-
-    // const keyDown = useCallback( e  => {
-    //     console.log('key-down', this, socket); 
-    // }, [ ]);
-    // const keyUp = useCallback( e  => {
-    //     console.log('key-up', this, socket );  
-    // }, [ ]);
-
+  const [socket, setSocket] = useState({connected : false});     
+ 
     useEffect(()=>{
       const unregister = mountGamepadEvents();
       return ()=>{
         unregister()
       }
-    })
-    // useEffect(() => { 
-    
-
-    //     window.addEventListener("keydown", keyDown);  
-    //     window.addEventListener("keyup", keyUp);  
- 
-    //     return ()=>{
-    //         window.removeEventListener("keydown", keyDown); 
-    //         window.removeEventListener("keyup", keyUp);  
-    //     }
-    // }, [])
-
+    }) 
   
   function disconnectSocket(){
-    if(socket){
-      socket.disconnect() 
+    if(socket.connected){
+      socket.io.disconnect() 
       console.log('disconnected from ' + socket.io.uri); 
     } 
   }
@@ -55,36 +34,33 @@ function App() {
   function connectSocket(host, port){ 
     disconnectSocket()
 
+    console.log('init socket', host + ':' + port);
     const client = socketio.connect(host + ':' + port); 
-    setSocket(client);
+    // setGamepad('init socket')
+    // setSocket(client);
 
     client.on('connect', ()=>{
       // setSocket(client);
-      console.log('connected to ' + client.io.uri); 
+      console.log('connected to ' + client.io.uri ,client);
+      setSocket({connected : true, uri: client.io.uri, io : client})
+      // setGamepad('connected to ' + client.io.uri)
       events.socket.connect.fire()
     })
     client.on('disconnect', ()=>{
-      console.log('disconnected from ' + client.io.uri); 
+      console.log('disconnected ' + client.io.uri);  
+      // setGamepad('disconnected ' + client.io.uri) 
+      setSocket({connected : false, io : client})
       events.socket.disconnect.fire()
     })
     client.on('video', (data)=>{ 
       events.socket.cameraData.fire(data)
     })
+    client.on('status', (data)=>{ 
+      events.socket.deviceStatus.fire(data)
+    })
   }
-  useEffect(()=>{ 
-    // window.addEventListener("gamepadconnected", (e) => {
-    //   console.log("Gamepad connected at index %d: %s. %d buttons, %d axes.",
-    //     e.gamepad.index, e.gamepad.id,
-    //     e.gamepad.buttons.length, e.gamepad.axes.length);
-        
-    //   const gp = navigator.getGamepads()[e.gamepad.index];
-    //   console.log(gp);
-    //   setGamepad(gp) 
-    // });
-    // window.addEventListener("gamepaddisconnected", (e) => {
-    //   console.log("Gamepad disconnected from index %d: %s",
-    //     e.gamepad.index, e.gamepad.id);
-    // }); 
+
+  useEffect(()=>{  
     connectSocket(localStorage.getItem('host') || 'localhost', localStorage.getItem('port') || '5123'); 
 
     return ()=>{ 
@@ -95,17 +71,17 @@ function App() {
 
 
   return (
-    <GamepadContext.Provider value={gamepad}>
+    // <GamepadContext.Provider value={''}>
       <SocketContext.Provider value={socket}>
         <div className="App" >
-          <Navbar connectSocket={(host, port) => connectSocket(host, port)}> 
-              {/* <div>{gamepads && (gamepads.axes) }</div> */}
-          </Navbar>
-          <ControlRobot />
-          <CameraPreview />
+          {/* <ControlRobot /> */}
+          <CameraPreview>
+            <Navbar connectSocket={(host, port) => connectSocket(host, port)}>  
+            </Navbar>
+          </CameraPreview>
         </div>
       </SocketContext.Provider>
-    </GamepadContext.Provider>
+    // </GamepadContext.Provider>
   );
 }
 

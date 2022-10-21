@@ -1,3 +1,4 @@
+import { ArrowSwitchIcon, CpuIcon, DeviceCameraVideoIcon, FlameIcon, MeterIcon } from '@primer/octicons-react';
 import React, { useEffect, useState } from 'react'
 import { events } from './app-events';
 import styles from './CameraPreview.module.scss'
@@ -5,12 +6,13 @@ import useSocket from './context/useSocket';
 
 let frames = 0, totalSize =0,  startTime = Date.now();
 
-export default function CameraPreview() {
+export default function CameraPreview(props) {
 
     const socket = useSocket();
     const [fps, setFPS] = useState(0);
     const [speedRate, setSpeedRate] = useState(0);
     const [image, setImage] = useState(null);   
+    const [deviceStatus, setDeviceStatus] = useState({});   
 
     useEffect(() => {
         // reconnect(); 
@@ -97,28 +99,39 @@ export default function CameraPreview() {
   
     //   useEffect(handleImageSize, [imageObj]);
 
-    // useEffect(()=>{
-    //     let connectSub = window.events.socket.connect.register(()=>{ 
-    //     }) 
-    //     let disconnectSub = window.events.socket.disconnect.register(()=>{ 
-    //     }) 
-    //     return ()=>{
-    //         connectSub.unregister();
-    //         disconnectSub.unregister();
-    //     }
-    // })
+    useEffect(()=>{
+        let connectSub = events.socket.connect.register(()=>{ 
+          socket.io.emit('video', {})
+        }) 
+        let disconnectSub = events.socket.disconnect.register(()=>{ 
+        }) 
+        let deviceStatusSub = events.socket.deviceStatus.register((data)=>{ 
+          setDeviceStatus(data);
+        }) 
+        
+        return ()=>{
+            connectSub.unregister();
+            disconnectSub.unregister();
+            deviceStatusSub.unregister();
+        }
+    }, [socket])
   return (
     <div className={styles.camera}> 
-        <img src={image}  width={width} height={height} alt="rpi camera"  />
-        {/* <img src={image} width={'100%'} height={'100%'} 
-            alt="rpi camera" style={{ transform : 'rotate(180deg)', filter:'blur(50px)' }}/> */}
+      <div className={styles.preview} style={{ width : width + 'px', height: height + 'px'}}>
+        <img src={image}  width={'100%'} height={'100%'} alt="rpi camera"  />
+          
+        <div className={styles.overlay}>
+          <span className='d-flex align-items-center '><ArrowSwitchIcon className='ps-1 me-2' />{speedRate} KB/S</span>
+          <span className='d-flex align-items-center '><DeviceCameraVideoIcon className='ps-1 me-2'/>{fps} FPS</span>
+        </div>
+        <div className={`${styles.overlay} ${styles.leftBottom}`}>
+          <span className='d-flex align-items-center '><FlameIcon className='ps-1 me-2' />{Math.floor(deviceStatus.temp)}&deg;</span>
+          <span className='d-flex align-items-center '><MeterIcon className='ps-1 me-2' />{Math.floor(deviceStatus.cpuUsage * 100)}%</span>
+          {/* <span className='d-flex align-items-center '><DeviceCameraVideoIcon className='ps-1 me-2'/>{fps} FPS</span> */}
+        </div>
 
-      {/* <div className={styles.image} style={{ backgroundImage: 'url(' + image + ')'}}/> */}
-
-      <div className={styles.overlay}>
-        <h6 className='mb-0 '>{fps} FPS</h6>
-        <h6 className='mb-0'>{speedRate} Kbps</h6>
-      </div>
+        {props.children}
+      </div>  
     </div>
   )
 }

@@ -1,13 +1,81 @@
-.navbar{
+ 
+
+.topbar{
     padding: 5px;
     width: 100%;
     // height: 50px;
-    background-color: rgba(0, 0, 0, 0.815);
-    
-    .port {
-        width: 80px;
+    // background-color: rgba(0, 0, 0, 0.815);
+    position: absolute;
+
+    .buttons{
+        display: flex;
     }
-    .host{
-        width: 150px;
+    hr{
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    label{
+        color: white;
+        font-weight: 400;
+        font-size: 12px;
+        // margin-left: 5px;
+        text-align: center;
+        width: 100%;
+    }
+    input{
+        width: 100%;
+        background-color: rgba(0, 0, 0, 0.425);
+        border-radius: 10px;
+        color: white;
+        border: none; 
+        padding: 4px 10px;
+        letter-spacing: 0.5px;
+        text-align: center;
+    }
+    textarea:focus, input:focus{
+        outline: none;
+    }
+    p{
+        font-size: 13px;
+        line-height: 13px;
+        font-weight: 100;
+    }
+    .port{
+        width: 60px;
+    }
+
+    .btn{
+        cursor: pointer;
+        border-radius: 10px;
+        background-color: rgba(0, 0, 0, 0.425);
+        color: white;
+        padding: 4px 10px;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: all 0.2s;
+        font-weight: 300;
+
+        &:hover{
+            background-color: rgba(0, 0, 0, 0.26);
+            transition: all 0.2s;
+        }
+
+        &.btnDanger{
+            background-color: rgb(202, 34, 34);
+        }
+        &.btnSuccess{
+            background-color:rgba(46, 204, 113,1.0)
+            
+        }
+        &.btnPrimary{
+            background-color:rgba(52, 152, 219,1.0)
+            
+        }
+    }
+
+    .info{
+        font-size: 13px;
     }
 }

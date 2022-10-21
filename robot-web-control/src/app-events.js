@@ -15,7 +15,8 @@ const events = {
         disconnect : new EventDispatcher(),
         connect : new EventDispatcher(),
         reconnect : new EventDispatcher(), 
-        cameraData : new EventDispatcher()
+        cameraData : new EventDispatcher(),
+        deviceStatus : new EventDispatcher(),
     },
     gamepad:{
       connect: new EventDispatcher(),
