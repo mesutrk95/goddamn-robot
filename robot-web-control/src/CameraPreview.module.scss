@@ -13,15 +13,16 @@
     align-items: center;
     
     .preview{
-      background-color: red;
+      background-color: rgb(24, 24, 24);
       position: relative;
+      // overflow: hidden;
 
       img{
         
         width: auto;
         max-width: 100%;
         object-fit:cover;
-        background-color: aquamarine;
+        // background-color: aquamarine;
             
         position: absolute;
         left: 0;
@@ -35,11 +36,14 @@
         position: absolute;
         bottom: 5px;
         right: 5px;
+        bottom: 0;
+        right: 0;
         background-color: rgba(0, 0, 0,  0.45);
         // padding: 10px 10px;
         padding: 6px 8px;
         backdrop-filter: blur(3px);
         border-radius: 8px;
+        border-radius: 8px 0 0 0;
         color: white;
         line-height: 16px;
         font-size: 13px;
@@ -55,9 +59,11 @@
         &.leftBottom{
           top: unset;
           right: unset;
-          bottom: 5px;
-          left: 5px;
+          bottom: 0;
+          left: 0;
           min-width: auto;
+          border-radius: 0 8px 0 0;
+          min-width: 120px;
         }
       } 
     }  

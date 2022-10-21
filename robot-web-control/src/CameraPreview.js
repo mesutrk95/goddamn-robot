@@ -118,15 +118,16 @@ export default function CameraPreview(props) {
   return (
     <div className={styles.camera}> 
       <div className={styles.preview} style={{ width : width + 'px', height: height + 'px'}}>
-        <img src={image}  width={'100%'} height={'100%'} alt="rpi camera"  />
+        <img src={image}  width={'100%'} height={'100%'} alt=""  />
           
         <div className={styles.overlay}>
           <span className='d-flex align-items-center '><ArrowSwitchIcon className='ps-1 me-2' />{speedRate} KB/S</span>
           <span className='d-flex align-items-center '><DeviceCameraVideoIcon className='ps-1 me-2'/>{fps} FPS</span>
         </div>
+
         <div className={`${styles.overlay} ${styles.leftBottom}`}>
-          <span className='d-flex align-items-center '><FlameIcon className='ps-1 me-2' />{Math.floor(deviceStatus.temp)}&deg;</span>
-          <span className='d-flex align-items-center '><MeterIcon className='ps-1 me-2' />{Math.floor(deviceStatus.cpuUsage * 100)}%</span>
+          <span className='d-flex align-items-center '><FlameIcon className='ps-1 me-2' />Temp {Math.floor(deviceStatus.temp)}&deg;</span>
+          <span className='d-flex align-items-center '><MeterIcon className='ps-1 me-2' />CPU {Math.floor(deviceStatus.cpuUsage * 100)}%</span>
           {/* <span className='d-flex align-items-center '><DeviceCameraVideoIcon className='ps-1 me-2'/>{fps} FPS</span> */}
         </div>
 

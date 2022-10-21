@@ -52,6 +52,12 @@ function App() {
       setSocket({connected : false, io : client})
       events.socket.disconnect.fire()
     })
+    client.on('connect_error', err => {
+      console.error('connect_error',err);
+    })
+    client.on('connect_failed', err => {
+      console.error('connect_failed', err);
+    })
     client.on('video', (data)=>{ 
       events.socket.cameraData.fire(data)
     })
@@ -61,6 +67,7 @@ function App() {
   }
 
   useEffect(()=>{  
+    console.log('started');
     connectSocket(localStorage.getItem('host') || 'localhost', localStorage.getItem('port') || '5123'); 
 
     return ()=>{ 
@@ -74,7 +81,7 @@ function App() {
     // <GamepadContext.Provider value={''}>
       <SocketContext.Provider value={socket}>
         <div className="App" >
-          {/* <ControlRobot /> */}
+          <ControlRobot />
           <CameraPreview>
             <Navbar connectSocket={(host, port) => connectSocket(host, port)}>  
             </Navbar>

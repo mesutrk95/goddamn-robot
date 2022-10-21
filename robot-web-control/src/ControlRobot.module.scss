@@ -1,13 +1,13 @@
 .controls{ 
-    display: flex;
-    justify-content: center;
+    position: absolute;
+    left: calc(50% - 35px);  
+    bottom: 10px;
+ 
 
-    .box{
-        width: 450px;
-
-        .btn{
-            min-width: 120px;
-        }
+    .joystick{
+        background-color: rgba(0, 0, 0, 0.452);
+        border-radius: 50%;
+        backdrop-filter: blur(3px);
     }
 
     .moveWidget{

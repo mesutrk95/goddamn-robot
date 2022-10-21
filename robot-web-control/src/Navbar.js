@@ -14,12 +14,13 @@ export default function Navbar(props) {
     const socket = useSocket();
     const [host, setHost] = useState(localStorage.getItem('host') || 'localhost'); 
     const [port, setPort] = useState(localStorage.getItem('port') || '5123');
-    const [quality, setQuality] = useState('hq');
+    const [quality, setQuality] = useState(localStorage.getItem('videoQuality') || 'hq');
     const [autoPreview, setAutoPreview] = useState(localStorage.getItem('autoPreview') === '1');
 
     const [menuOpen, setMenuOpen] = useState({ conn: false, preview: false}); 
 
     function handleQualityChange(q) { 
+        localStorage.setItem('videoQuality', q)
         setQuality(q)
         socket.io.emit('video-quality', q)
     } 
@@ -99,7 +100,7 @@ export default function Navbar(props) {
                         <div className='d-flex mt-2'>
                             <div className={`${styles.btn} ${styles.btnSuccess}  w-100`} onClick={e => props.connectSocket(host, port) }>
                                 <ZapIcon className='ps-1' size='small'></ZapIcon>
-                                <span className='ps-1'>Connect</span>
+                                <span className='ps-1'>Reconnect</span>
                             </div>
                         </div>
 
@@ -111,6 +112,7 @@ export default function Navbar(props) {
                         <p className='t-muted mb-2'>The 1080x720-30 FPS is reachable in the high quality option.</p>
                         <RadioButton value="vhq" checked={quality} label="Ultra HD Quality" onChange={value => handleQualityChange(value)}/>
                         <RadioButton value="hq" checked={quality} label="HD Quality" onChange={value => handleQualityChange(value)}/>
+                        <RadioButton value="mq" checked={quality} label="Medium Quality" onChange={value => handleQualityChange(value)}/>
                         <RadioButton value="lq" checked={quality} label="VGA Quality" onChange={value => handleQualityChange(value)}/> 
                         <RadioButton value="vlq" checked={quality} label="QVGA Quality" onChange={value => handleQualityChange(value)}/> 
                         

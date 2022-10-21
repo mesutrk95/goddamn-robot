@@ -4,6 +4,7 @@ import useSocket from './context/useSocket';
 // import useGamepad from './context/useGamepad';
 import { events } from './app-events';
 // import {SocketContext} from './context/socket'; 
+import { Joystick } from 'react-joystick-component';
 
 import KeyboardEventHandler from '@infinium/react-keyboard-event-handler';
  
@@ -23,12 +24,12 @@ export default function ControlRobot() {
         const axx = caxis || axis
         let a = { x: axx.x.toFixed(4) , y: axx.y.toFixed(4) };
         console.log('axis', a) 
-        socket.emit('action', a)
+        socket.io.emit('action', a)
     }, [socket]);
 
     function onKeyDown(key ,event) {
         console.log('key-down', key, axis); 
-        
+         
         if(key === 'w' || key === 'ArrowUp')  axis.y = 1
         else if(key === 's' || key === 'ArrowDown')  axis.y = -1
         // else axis.y = 0
@@ -57,12 +58,7 @@ export default function ControlRobot() {
         }
     }
   
-    useEffect(() => {  
-        if(socket){
-            socket.on('action' , (data)=> {
-                console.log('deg:', data);
-            })
-        }
+    useEffect(() => {   
         let disconnectSub = events.socket.disconnect.register(()=>{
             clearInterval(cmdSendIntervalHandler)
             cmdSendIntervalHandler = null;
@@ -88,67 +84,85 @@ export default function ControlRobot() {
         } 
     }, [socket, sendCMD])
 
-    const [isMouseDown, setMouseIsDown] = useState(false); 
-    const widgetHandleRef = useRef()
-    const widgetRef = useRef()
+    // const [isMouseDown, setMouseIsDown] = useState(false); 
+    // const widgetHandleRef = useRef()
+    // const widgetRef = useRef()
 
-    function onMouseDownHandle(e){ 
-        setMouseIsDown(true)
-        widgetHandleRef.current.style.left = '0px'
-        widgetHandleRef.current.style.top = '0px'
-    }
-    function onMouseUpHandle(e){ 
-        setMouseIsDown(false) 
-        const rw = widgetRef.current.offsetWidth / 2  
-        const rh = widgetHandleRef.current.offsetWidth / 2   
-        widgetHandleRef.current.style.left = (rw - rh) + 'px'
-        widgetHandleRef.current.style.top = (rw - rh) + 'px' 
-        let newAxis = { x: 0 , y : 0 };
-        axis = newAxis;
+    // function onMouseDownHandle(e){ 
+    //     setMouseIsDown(true)
+    //     widgetHandleRef.current.style.left = '0px'
+    //     widgetHandleRef.current.style.top = '0px'
+    // }
+    // function onMouseUpHandle(e){ 
+    //     setMouseIsDown(false) 
+    //     const rw = widgetRef.current.offsetWidth / 2  
+    //     const rh = widgetHandleRef.current.offsetWidth / 2   
+    //     widgetHandleRef.current.style.left = (rw - rh) + 'px'
+    //     widgetHandleRef.current.style.top = (rw - rh) + 'px' 
+    //     let newAxis = { x: 0 , y : 0 };
+    //     axis = newAxis;
 
-        // console.log(newAxis) 
+    //     // console.log(newAxis) 
 
-        clearInterval(cmdSendIntervalHandler)
-        cmdSendIntervalHandler = null;
-        sendCMD();
-    }
-    function onMouseMoveHandle(e){
-        if(!isMouseDown) return;
-        const ox = widgetRef.current.offsetLeft
-        const oy = widgetRef.current.offsetTop
+    //     clearInterval(cmdSendIntervalHandler)
+    //     cmdSendIntervalHandler = null;
+    //     sendCMD();
+    // }
+    // function onMouseMoveHandle(e){
+    //     if(!isMouseDown) return;
+    //     const ox = widgetRef.current.offsetLeft
+    //     const oy = widgetRef.current.offsetTop
 
-        const rw = widgetRef.current.offsetWidth / 2  
-        const rh = widgetHandleRef.current.offsetWidth / 2 
+    //     const rw = widgetRef.current.offsetWidth / 2  
+    //     const rh = widgetHandleRef.current.offsetWidth / 2 
 
-        let absX = (e.clientX - ox) 
-        let absY = (e.clientY - oy)   
-        const len =Math.sqrt(Math.pow(absX - rw, 2) + Math.pow(absY - rw, 2))
-        // if(len <= 0.01){
+    //     let absX = (e.clientX - ox) 
+    //     let absY = (e.clientY - oy)   
+    //     const len =Math.sqrt(Math.pow(absX - rw, 2) + Math.pow(absY - rw, 2))
+    //     // if(len <= 0.01){
             
-        // }
-        const x = absX - rw
-        const y = -(absY - rw)
-        const   normX = x / len,
-                normY = y / len 
+    //     // }
+    //     const x = absX - rw
+    //     const y = -(absY - rw)
+    //     const   normX = x / len,
+    //             normY = y / len 
 
-        if(len > rw){ 
-            absX = normX * rw + rw
-            absY = -normY * rw + rw
-        } 
-        widgetHandleRef.current.style.left = (absX - rh) + 'px'
-        widgetHandleRef.current.style.top = (absY - rh) + 'px'
+    //     if(len > rw){ 
+    //         absX = normX * rw + rw
+    //         absY = -normY * rw + rw
+    //     } 
+    //     widgetHandleRef.current.style.left = (absX - rh) + 'px'
+    //     widgetHandleRef.current.style.top = (absY - rh) + 'px'
 
-        const l = 2 * (absX / rw * 0.5 - 0.5)
-        const t = -2 * (absY / rw * 0.5 - 0.5)
-        const newAxis = { x: sqrt(l) , y : sqrt(t)};
-        // console.log(l, t)
-        axis = newAxis;
+    //     const l = 2 * (absX / rw * 0.5 - 0.5)
+    //     const t = -2 * (absY / rw * 0.5 - 0.5)
+    //     const newAxis = { x: sqrt(l) , y : sqrt(t)};
+    //     // console.log(l, t)
+    //     axis = newAxis;
 
-        if(!cmdSendIntervalHandler) { 
+    //     if(!cmdSendIntervalHandler) { 
+    //         clearInterval(cmdSendIntervalHandler) 
+    //         cmdSendIntervalHandler = setInterval(()=> sendCMD(), 10)
+    //         sendCMD();
+    //     } 
+    // }
+
+    function handleJoyStick(action, e){ 
+        
+        const newAxis = { x: sqrt(e.x / 35) , y : sqrt(e.y / 35)};
+        console.log(action, e)
+        axis = newAxis; 
+
+        if(action === 'Stopped'){
             clearInterval(cmdSendIntervalHandler) 
-            cmdSendIntervalHandler = setInterval(()=> sendCMD(), 10)
-            sendCMD();
-        } 
+            cmdSendIntervalHandler = null
+        } else if(action === 'Started'){
+            if(!cmdSendIntervalHandler) { 
+                clearInterval(cmdSendIntervalHandler) 
+                cmdSendIntervalHandler = setInterval(()=> sendCMD(), 10)
+                sendCMD();
+            } 
+        }
     }
 
     return (
@@ -163,11 +177,17 @@ export default function ControlRobot() {
                 handleKeys={['a', 'w', 's', 'd']}
                 onKeyEvent={onKeyUp} />
 
+            <div className={styles.joystick}>
+                <Joystick start={e => handleJoyStick("Started", e)} throttle={50} size={70}
+                            stickColor="#00000055" baseColor="#00000000"
+                            move={e => handleJoyStick('Move', e)} stop={e =>handleJoyStick("Stopped", e)}/>
+            </div>
+{/* 
             <div className={styles.moveWidget} ref={widgetRef} onMouseDown={e => onMouseDownHandle(e)} onMouseMove={e => onMouseMoveHandle(e)} onMouseUp={e => onMouseUpHandle(e)}>
                 <div className={styles.handle} ref={widgetHandleRef}>
 
                 </div>
-            </div> 
+            </div>  */}
         </div>
     )
 }
