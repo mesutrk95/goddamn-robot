@@ -1,12 +1,13 @@
 ## :triangular_flag_on_post: **RaspberreyPI Remote Tank Chassis Robot** :triangular_flag_on_post:
 This project contains all neccessary source codes to control a 
-remote **Raspberry Pi** based tank chassis robot, Dedicated to lovers of robotics & software developers!
-You can have your own tank chassis design depending on 
-the hardwares you may have. Click here to see [demo images & videos  :bulb:](/docs/demo.md).
+remote **Raspberry Pi** based tank chassis robot, *Dedicated to lovers of robotics & software developers!*
 
-If you are looking for the hardware implementation, Please 
-[follow this link](/docs/hardware.md) or If you are intereseted 
-to know more about the project software implementation then please stay here!  
+You can have your own tank chassis design depending on 
+the hardwares you may have. *Click here to see [demo images & videos  :bulb:](/docs/demo.md) of what i have made.*
+
+If you are looking for the hardware implementation then please 
+follow [this link](/docs/hardware.md) or If you are intereseted 
+to know more about the project software implementation then please stay here!  :orange:
 
 ![My Robot Design](/docs/github-overview.jpg)  
 
@@ -21,19 +22,19 @@ The RPI4 considered to be a **Server** and the web client application is
 our **Client**. The project consists of 2 different projects for control the robot :
 - [Robot Application (Server)](#robotrobot-application-server)  
 - [Robot Webapp Controller (Client)](#joystick-robot-webapp-controller-client)    
-
-<!-- ### Usecases
-- Spy others activity
--  -->
-
+ 
 ### :mechanical_arm: Features
+Many other interesting features can be added to the robot, And they can realy make 
+the robot smarter! The robot is still under development. At the time of writing the 
+documentation, These are the main features of robot: 
+
 - Smooth movements in all directions
 - Smooth turn control
 - Camera live stream
 - Robot keyboard controller 
 - Robot mouse controller 
 - Robot joystick controller 
-
+ 
 
 ### :robot:	Robot application (Server)
 The robot Nodejs application
@@ -53,12 +54,15 @@ robot RPI computer.
 [Read more](/robot-web-control/Readme.md) about the robot web app controller and installation guides.
 
 ### :electric_plug:	 Hardwares & Modules
+The list below, includes all necessary modules and hardwares to make the robot and the  
+design depended parts were ignored in this list. 
 - 1 x Tank chassis with 2 DC motors 
 - 1 x Raspberry PI 4
 - 1 x Raspberry PI camera (OV5647)
 - 1 x L298 motor driver controller module
 - 1 x SG90 Servo motor
 - 1 x HX-2S-10 Series Li-ion battery managment system (BMS) module
+- 1 x TP-5100 Series Li-ion battery charger module
 - 2 x 5V-2A DC/DC Step-down voltage converter module (MP1584EN, MINI-360 ...)
 - 1 x 2A DC/DC Boost voltage converter module (MT3608 Module)
 - 4 x Li-ion 18650 battery (~2600mah)
