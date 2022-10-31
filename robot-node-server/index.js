@@ -1,3 +1,4 @@
+const PORT = process.env.PORT || 5123;
 
 const express = require('express');
 const cors = require('cors');
@@ -22,8 +23,8 @@ app.use((req, res, next) => {
 app.get('/', (req, res)=>{
   res.send('ok')
 })
-var server = app.listen(5123, ()=>{
-  console.log('listening on ' + 5123)
+var server = app.listen(PORT, ()=>{
+  console.log('listening on ' + PORT)
 }); 
   
 const io = require('socket.io')(server, { 
