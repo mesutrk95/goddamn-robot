@@ -26,30 +26,44 @@ export default function ControlRobot() {
         console.log('axis', a) 
         socket.io.emit('action', a)
     }, [socket]);
+    const turnCamera = useCallback(angle => {  
+        console.log('camera-turn', angle) 
+        socket.io.emit('camera-turn', angle)
+    }, [socket]);
 
     function onKeyDown(key ,event) {
         console.log('key-down', key, axis); 
          
-        if(key === 'w' || key === 'ArrowUp')  axis.y = 1
-        else if(key === 's' || key === 'ArrowDown')  axis.y = -1
-        // else axis.y = 0
+        if( key === 'down' || key === 'up'){
+            turnCamera(key === 'down' ? 1 : -1);
+        }else { 
+            if(key === 'w' )  axis.y = 1
+            else if(key === 's')  axis.y = -1
+            // else axis.y = 0
+    
+            if(key === 'd') axis.x = 1
+            else if(key === 'a' ) axis.x = -1
+            // else axis.x = 0
+    
+            console.log('key-down then', key, axis); 
+    
+            if(!cmdSendIntervalHandler) { 
+                clearInterval(cmdSendIntervalHandler) 
+                cmdSendIntervalHandler = setInterval(()=> sendCMD(), 50)
+                sendCMD();
+            } 
+        }
 
-        if(key === 'd' || key === 'ArrowRight') axis.x = 1
-        else if(key === 'a' || key === 'ArrowLeft') axis.x = -1
-        // else axis.x = 0
-
-        console.log('key-down then', key, axis); 
-
-        if(!cmdSendIntervalHandler) { 
-            clearInterval(cmdSendIntervalHandler) 
-            cmdSendIntervalHandler = setInterval(()=> sendCMD(), 50)
-            sendCMD();
-        } 
     }
     function onKeyUp( key, event ) {
         console.log('key-up', key, axis); 
-        if( key === 'w' || key === 'ArrowUp' || key === 's' || key === 'ArrowDown' ) axis.y = 0  
-        if( key === 'd' || key === 'ArrowRight' || key === 'a' || key === 'ArrowLeft' ) axis.x = 0  
+        
+        if( key === 'down' || key === 'up'){
+
+        }
+
+        if( key === 'w' || key === 's' ) axis.y = 0  
+        if( key === 'd' || key === 'a' ) axis.x = 0  
 
         if(axis.x === 0 && axis.y === 0){
             clearInterval(cmdSendIntervalHandler)
@@ -78,11 +92,16 @@ export default function ControlRobot() {
                 const a = { x : gp.axes[0], y: -gp.axes[1] }
                 sendCMD(a)
             }
+            if(Math.abs(gp.axes[2]) > 0.01 || Math.abs(gp.axes[3]) > 0.01){
+                console.log(gp.axes);
+                const ct = { x : gp.axes[2], y: -gp.axes[3] } 
+                turnCamera(ct.y > 0 ? 1 : -1);
+            }
         })
         return ()=>{ 
             sub.unregister()
         } 
-    }, [socket, sendCMD])
+    }, [socket, sendCMD, turnCamera])
 
     // const [isMouseDown, setMouseIsDown] = useState(false); 
     // const widgetHandleRef = useRef()
@@ -169,12 +188,12 @@ export default function ControlRobot() {
         <div className={styles.controls}>
             <KeyboardEventHandler
                 handleEventType="keydown"
-                handleKeys={['a', 'w', 's', 'd']}
+                handleKeys={['a', 'w', 's', 'd', 'left', 'right', 'up', 'down']}
                 onKeyEvent={onKeyDown} />
                 
             <KeyboardEventHandler
                 handleEventType="keyup"
-                handleKeys={['a', 'w', 's', 'd']}
+                handleKeys={['a', 'w', 's', 'd', 'left', 'right', 'up', 'down']}
                 onKeyEvent={onKeyUp} />
 
             <div className={styles.joystick}>
