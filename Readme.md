@@ -1,17 +1,16 @@
-## RaspberreyPI Remote Tank Chassis Robot 
+## :triangular_flag_on_post: RaspberreyPI Remote Tank Chassis Robot 
 This project contains all neccessary source codes to control a 
-remote Raspberry Pi based tank chassis robot, Dedicated to lovers 
-of robotics & software developers!
+remote **Raspberry Pi** based tank chassis robot, Dedicated to lovers of robotics & software developers!
 You can have your own tank chassis design depending on 
-the hardwares you may have. This is how i have made my robot:
+the hardwares you may have.
 
-![My Robot Design](/docs/github-overview.jpg)  
-
-Click here to see more [images & videos](/docs/hardware.md).
+Click here to see demo [images & videos](/docs/demo.md).
 
 If you are looking for the hardware implementation, Please 
 [follow this link](/docs/hardware.md) or If you are intereseted 
-to know more about the project software implementation then please stay here! 
+to know more about the project software implementation then please stay here!  
+
+![My Robot Design](/docs/github-overview.jpg)  
 
 ### :eyes: Overview
 I have used Wifi communication protocol to connect the robot to its controller,
