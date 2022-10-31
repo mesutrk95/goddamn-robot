@@ -19,7 +19,7 @@ connected to a **same Wifi network**, You can connect them to your home Wifi, Or
 about this kind of setup.
 
 The RPI4 considered to be a **Server** and the web client application is 
-our **Client**. The project consists of 2 different projects for control the robot :
+our **Client**. The project consists of 2 separated projects for controlling the robot :
 - [Robot Application (Server)](#robotrobot-application-server)  
 - [Robot Webapp Controller (Client)](#joystick-robot-webapp-controller-client)    
  
