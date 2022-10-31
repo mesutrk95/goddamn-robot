@@ -1,10 +1,8 @@
-## :triangular_flag_on_post: RaspberreyPI Remote Tank Chassis Robot 
+## :triangular_flag_on_post: **RaspberreyPI Remote Tank Chassis Robot** :triangular_flag_on_post:
 This project contains all neccessary source codes to control a 
 remote **Raspberry Pi** based tank chassis robot, Dedicated to lovers of robotics & software developers!
 You can have your own tank chassis design depending on 
-the hardwares you may have.
-
-Click here to see demo [images & videos](/docs/demo.md).
+the hardwares you may have. Click here to see [demo images & videos  :bulb:](/docs/demo.md).
 
 If you are looking for the hardware implementation, Please 
 [follow this link](/docs/hardware.md) or If you are intereseted 
@@ -12,7 +10,7 @@ to know more about the project software implementation then please stay here!
 
 ![My Robot Design](/docs/github-overview.jpg)  
 
-### :eyes: Overview
+### :mag_right: Overview
 I have used Wifi communication protocol to connect the robot to its controller,
 Thus the robot and robot's controller should be 
 connected to a **same Wifi network**, You can connect them to your home Wifi, Or you can setup the RPI to make an 
@@ -28,13 +26,13 @@ our **Client**. The project consists of 2 different projects for control the rob
 - Spy others activity
 -  -->
 
-### :muscle: Features
-- Smooth movement in all directions
+### :mechanical_arm: Features
+- Smooth movements in all directions
 - Smooth turn control
 - Camera live stream
-- Keyboard controlling support 
-- Mouse controlling support 
-- Joystick controlling support 
+- Robot keyboard controller 
+- Robot mouse controller 
+- Robot joystick controller 
 
 
 ### :robot:	Robot application (Server)
@@ -69,3 +67,4 @@ robot RPI computer.
 
 
 ### :warning: Security!
+Make sure about your Wifi modem that there you haven't got any **data leak**! Transmitting the camera and control data happens over the **insecure http & ws** protocols, you can secure the connections by implementing the **https & wss** contexts.

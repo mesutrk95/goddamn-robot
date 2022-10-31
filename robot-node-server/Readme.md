@@ -1,6 +1,6 @@
 ### Overview
-It is supposed that you have installed Raspbian OS on 
-the RPI, and the camera module configured fine.
+It is supposed that you have installed **Raspbian OS** on 
+the RPI, and the **camera** module has configured fine.
 You may also should install Nodejs, Before running the 
 robot controller script on the RPI.
 
@@ -8,7 +8,7 @@ robot controller script on the RPI.
 - Nodejs > 16.x
 - NPM package manager 
 
-### Installtion
+### Installation
 ```
 cd /to-project-folder/robot-node-server
 npm install
