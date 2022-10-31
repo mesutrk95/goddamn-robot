@@ -19,8 +19,8 @@ about this kind of setup.
 
 The RPI4 considered to be a **Server** and the web client application is 
 our **Client**. The project consists of 2 different projects for control the robot :
-- [Robot Application (Server)](#robot-application-(server))  
-- [Robot Webapp Controller (Client)](#robot-webapp-controller-(client))    
+- [Robot Application (Server)](#robotrobot-application-server)  
+- [Robot Webapp Controller (Client)](#joystick-robot-webapp-controller-client)    
 
 <!-- ### Usecases
 - Spy others activity
