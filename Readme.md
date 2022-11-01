@@ -51,7 +51,7 @@ of this project is providing a good user interface to control the remote Robot.
 You can run this project on **another machine** or you even can run it on the 
 robot RPI computer.
 
-[Read more](/robot-web-control/Readme.md) about the robot web app controller and installation guides.
+[Read more](/robot-react-client/Readme.md) about the robot web app controller and installation guides.
 
 ### :electric_plug:	 Hardwares & Modules
 The list below, includes all necessary modules and hardwares to make the robot and the  

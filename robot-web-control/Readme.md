@@ -1,10 +1,12 @@
+
+![React webapp demo](../docs/react-demo.jpg)
+
 ### Requirements
-- Nodejs > 16.x
-- NPM package manager 
+- Nodejs > 16.x 
 
 ### Installation Dependencies
 ```
-cd /to-project-folder/robot-web-control
+cd /to-project-folder/robot-react-client
 npm install
 ```
 
