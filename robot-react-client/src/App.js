@@ -1,7 +1,7 @@
  
 import styles from './App.module.scss';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { events } from "./context/app-events"; 
 import { registerGamepadEvents } from './utils/gamepad';  
 import socketio from "socket.io-client";     
