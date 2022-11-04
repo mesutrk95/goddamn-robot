@@ -1,8 +1,7 @@
 import { EyeClosedIcon, ZapIcon } from '@primer/octicons-react';
 import { useState } from 'react';
-import CheckButton from './CheckButton';
-import useSocket from './context/useSocket';
-// import useGamepad from './context/useGamepad';
+import CheckButton from './CheckButton'; 
+import useSocket from '../context/useSocket'; 
 import MenuButton from './MenuButton';
 import styles from './Navbar.module.scss'
 import RadioButton from './RadioButton';

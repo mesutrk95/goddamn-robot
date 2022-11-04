@@ -1,6 +1,6 @@
-import { events } from "./app-events";
+import { events } from "../context/app-events";
 
-export function mountGamepadEvents(){
+export function registerGamepadEvents(){
     let updating = false;
     function update(){  
         if(updating){

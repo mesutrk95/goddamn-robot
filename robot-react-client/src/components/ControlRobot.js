@@ -1,16 +1,14 @@
 import styles from './ControlRobot.module.scss'
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
-import useSocket from './context/useSocket';
-// import useGamepad from './context/useGamepad';
-import { events } from './app-events';
-// import {SocketContext} from './context/socket'; 
+
+import useSocket from '../context/useSocket'; 
+import { events } from '../context/app-events'; 
 import { Joystick } from 'react-joystick-component';
 
 import KeyboardEventHandler from '@infinium/react-keyboard-event-handler';
  
-let cmdSendIntervalHandler = null 
-
-let axis = {x : 0, y : 0}
+let cmdSendIntervalHandler = null  
+let axis = {x : 0, y : 0} 
 
 function sqrt(value){
     return value < 0 ? -Math.sqrt(-value): Math.sqrt(value)
@@ -20,12 +18,13 @@ export default function ControlRobot() {
 
     const socket = useSocket();  
  
-    const sendCMD = useCallback(caxis => { 
+    const moveRobot = useCallback(caxis => { 
         const axx = caxis || axis
         let a = { x: axx.x.toFixed(4) , y: axx.y.toFixed(4) };
         console.log('axis', a) 
         socket.io.emit('action', a)
     }, [socket]);
+
     const turnCamera = useCallback(angle => {  
         console.log('camera-turn', angle) 
         socket.io.emit('camera-turn', angle)
@@ -49,8 +48,8 @@ export default function ControlRobot() {
     
             if(!cmdSendIntervalHandler) { 
                 clearInterval(cmdSendIntervalHandler) 
-                cmdSendIntervalHandler = setInterval(()=> sendCMD(), 50)
-                sendCMD();
+                cmdSendIntervalHandler = setInterval(()=> moveRobot(), 50)
+                moveRobot();
             } 
         }
 
@@ -90,7 +89,7 @@ export default function ControlRobot() {
             if(Math.abs(gp.axes[0]) > 0.01 || Math.abs(gp.axes[1]) > 0.01){
                 console.log(gp.axes);
                 const a = { x : gp.axes[0], y: -gp.axes[1] }
-                sendCMD(a)
+                moveRobot(a)
             }
             if(Math.abs(gp.axes[2]) > 0.01 || Math.abs(gp.axes[3]) > 0.01){
                 console.log(gp.axes);
@@ -101,71 +100,8 @@ export default function ControlRobot() {
         return ()=>{ 
             sub.unregister()
         } 
-    }, [socket, sendCMD, turnCamera])
-
-    // const [isMouseDown, setMouseIsDown] = useState(false); 
-    // const widgetHandleRef = useRef()
-    // const widgetRef = useRef()
-
-    // function onMouseDownHandle(e){ 
-    //     setMouseIsDown(true)
-    //     widgetHandleRef.current.style.left = '0px'
-    //     widgetHandleRef.current.style.top = '0px'
-    // }
-    // function onMouseUpHandle(e){ 
-    //     setMouseIsDown(false) 
-    //     const rw = widgetRef.current.offsetWidth / 2  
-    //     const rh = widgetHandleRef.current.offsetWidth / 2   
-    //     widgetHandleRef.current.style.left = (rw - rh) + 'px'
-    //     widgetHandleRef.current.style.top = (rw - rh) + 'px' 
-    //     let newAxis = { x: 0 , y : 0 };
-    //     axis = newAxis;
-
-    //     // console.log(newAxis) 
-
-    //     clearInterval(cmdSendIntervalHandler)
-    //     cmdSendIntervalHandler = null;
-    //     sendCMD();
-    // }
-    // function onMouseMoveHandle(e){
-    //     if(!isMouseDown) return;
-    //     const ox = widgetRef.current.offsetLeft
-    //     const oy = widgetRef.current.offsetTop
-
-    //     const rw = widgetRef.current.offsetWidth / 2  
-    //     const rh = widgetHandleRef.current.offsetWidth / 2 
-
-    //     let absX = (e.clientX - ox) 
-    //     let absY = (e.clientY - oy)   
-    //     const len =Math.sqrt(Math.pow(absX - rw, 2) + Math.pow(absY - rw, 2))
-    //     // if(len <= 0.01){
-            
-    //     // }
-    //     const x = absX - rw
-    //     const y = -(absY - rw)
-    //     const   normX = x / len,
-    //             normY = y / len 
-
-    //     if(len > rw){ 
-    //         absX = normX * rw + rw
-    //         absY = -normY * rw + rw
-    //     } 
-    //     widgetHandleRef.current.style.left = (absX - rh) + 'px'
-    //     widgetHandleRef.current.style.top = (absY - rh) + 'px'
-
-    //     const l = 2 * (absX / rw * 0.5 - 0.5)
-    //     const t = -2 * (absY / rw * 0.5 - 0.5)
-    //     const newAxis = { x: sqrt(l) , y : sqrt(t)};
-    //     // console.log(l, t)
-    //     axis = newAxis;
-
-    //     if(!cmdSendIntervalHandler) { 
-    //         clearInterval(cmdSendIntervalHandler) 
-    //         cmdSendIntervalHandler = setInterval(()=> sendCMD(), 10)
-    //         sendCMD();
-    //     } 
-    // }
-
+    }, [socket, moveRobot, turnCamera])
+  
     function handleJoyStick(action, e){ 
         
         const newAxis = { x: sqrt(e.x / 35) , y : sqrt(e.y / 35)};
@@ -178,8 +114,8 @@ export default function ControlRobot() {
         } else if(action === 'Started'){
             if(!cmdSendIntervalHandler) { 
                 clearInterval(cmdSendIntervalHandler) 
-                cmdSendIntervalHandler = setInterval(()=> sendCMD(), 10)
-                sendCMD();
+                cmdSendIntervalHandler = setInterval(()=> moveRobot(), 10)
+                moveRobot();
             } 
         }
     }
@@ -197,16 +133,14 @@ export default function ControlRobot() {
                 onKeyEvent={onKeyUp} />
 
             <div className={styles.joystick}>
-                <Joystick start={e => handleJoyStick("Started", e)} throttle={50} size={70}
-                            stickColor="#00000055" baseColor="#00000000"
-                            move={e => handleJoyStick('Move', e)} stop={e =>handleJoyStick("Stopped", e)}/>
-            </div>
-{/* 
-            <div className={styles.moveWidget} ref={widgetRef} onMouseDown={e => onMouseDownHandle(e)} onMouseMove={e => onMouseMoveHandle(e)} onMouseUp={e => onMouseUpHandle(e)}>
-                <div className={styles.handle} ref={widgetHandleRef}>
-
-                </div>
-            </div>  */}
+                <Joystick   
+                    start={e => handleJoyStick("Started", e)} 
+                    move={e => handleJoyStick('Move', e)} 
+                    stop={e =>handleJoyStick("Stopped", e)}
+                    throttle={50} size={70}
+                    stickColor="#00000055" baseColor="#00000000"
+                />
+            </div> 
         </div>
     )
 }
