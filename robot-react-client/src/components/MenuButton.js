@@ -1,7 +1,7 @@
 import styles from './MenuButton.module.scss'
 
 import * as OctIcon from '@primer/octicons-react'
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 export default function MenuButton(props) {
     const Icon = OctIcon[props.icon] 
